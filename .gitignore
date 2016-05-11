@@ -41,25 +41,11 @@ ehthumbs.db
 *~
 \#*#
 
-# =================================== #
-# Binary assets (Google drive please) #
-# =================================== #
-# *.dae*
-# *.obj*
-# *.png*
-# *.tga*
-# *.mp3*
-# *.wav*
-# *.ttf*
+# ======================== #
+# Enviro-Related INI Files #
+# ======================== #
 assetUser.ini*
 desktop.ini*
-
-# ================ #
-# Project Specific #
-# ================ #
-# fonts*
-# textures*
-# sprites*
 
 # ===================== #
 # Other Synchronization #
