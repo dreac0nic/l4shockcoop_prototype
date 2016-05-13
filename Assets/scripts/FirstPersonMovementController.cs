@@ -170,17 +170,10 @@ public class FirstPersonMovementController : MonoBehaviour
 
     // Crouch
     if(m_CrouchInput && m_Collider.height > CrouchHeight) {
-      if(m_IsGrounded) {
-	m_Rigidbody.MovePosition(this.transform.position - 0.5f*Vector3.up*(m_Collider.height - CrouchHeight));
-      }
-      
+      m_Collider.center -= 0.5f*Vector3.up*CrouchHeight;
       m_Collider.height = CrouchHeight;
     } else if(!m_CrouchInput && m_Collider.height < m_NormalHeight) {
-      if(m_IsGrounded) {
-	m_Rigidbody.MovePosition(this.transform.position + 0.5f*Vector3.up*(m_NormalHeight - m_Collider.height));
-      }
-      
-      m_Collider.height = m_NormalHeight;
+      m_Collider.center += 0.5f*Vector3.up*CrouchHeight;
     }
 
     // Calculate movement based on current inputs
