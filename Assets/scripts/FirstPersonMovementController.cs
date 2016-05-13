@@ -22,7 +22,8 @@ public class FirstPersonMovementController : MonoBehaviour
   public float JumpForce = 10.0f;
   public float JumpLandingCooldown = 0.1f;
   public float CrouchHeight = 0.5f;
-  public float CrouchSpeed = 1.0f;
+  public bool CrouchLerp = false;
+  public float CrouchLerpSpeed = 1.0f;
   public float CrouchMaximumVelocity = 5.0f;
 
   [Header("Jump Ghosting")]
