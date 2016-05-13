@@ -21,6 +21,9 @@ public class FirstPersonMovementController : MonoBehaviour
   public float Acceleration = 20.0f;
   public float JumpForce = 10.0f;
   public float JumpLandingCooldown = 0.1f;
+  public float CrouchHeight = 0.5f;
+  public float CrouchSpeed = 1.0f;
+  public float CrouchMaximumVelocity = 5.0f;
 
   [Header("Jump Ghosting")]
   public bool EnableGhosting = false;
@@ -40,6 +43,7 @@ public class FirstPersonMovementController : MonoBehaviour
   public string ControllerLookX = "Look Horizontal";
   public string ControllerLookY = "Look Vertical";
   public string Jump = "Jump";
+  public string Crouch = "Crouch";
 
   // External references for player components
   protected Rigidbody m_Rigidbody;
@@ -49,6 +53,8 @@ public class FirstPersonMovementController : MonoBehaviour
   protected bool m_IsGrounded = false;
   protected bool m_JumpInput = false;
   protected bool m_Jumped = false;
+  protected bool m_CrouchInput = false;
+  protected float m_NormalHeight;
   protected float m_LandingTimeout;
   protected float m_GhostingTimeout;
   protected Vector2 m_MovementInput;
@@ -69,11 +75,14 @@ public class FirstPersonMovementController : MonoBehaviour
 	Debug.LogWarning("FirstPersonMovementController: Ground Check Start has not been assigned. Reassigning to object transform.");
       }
     }
+
+    m_NormalHeight = m_Collider.height;
   }
 
   public void Update() {
     // Update state inputs
     m_JumpInput = Input.GetButton(Jump) && (Time.time >= m_LandingTimeout);
+    m_CrouchInput = Input.GetButton(Crouch);
     m_MovementInput = new Vector2(Input.GetAxisRaw(StrafingAxis), Input.GetAxisRaw(MovementAxis));
     Vector3 rotational_input = new Vector2(Input.GetAxisRaw(MouseXAxis), Input.GetAxisRaw(MouseYAxis));
 
@@ -145,6 +154,15 @@ public class FirstPersonMovementController : MonoBehaviour
       }
 
       m_Rigidbody.AddForce(JumpForce*Vector3.up, ForceMode.Impulse);
+    }
+
+    // Crouch
+    if(m_CrouchInput && m_Collider.height > CrouchHeight) {
+      m_Collider.height = CrouchHeight;
+      this.transform.position -= Vector3.up*CrouchHeight;
+    } else if(m_Collider.height < m_NormalHeight) {
+      m_Collider.height = m_NormalHeight;
+      this.transform.position += Vector3.up*CrouchHeight;
     }
 
     // Calculate movement based on current inputs
