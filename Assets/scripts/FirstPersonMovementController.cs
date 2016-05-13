@@ -129,17 +129,17 @@ public class FirstPersonMovementController : MonoBehaviour
     Vector3 look_right = (CameraAnchor ? CameraAnchor.right : this.transform.right);
 
     // Perform ground check to see if we have left the ground.
-    Vector3 point_bottom = GroundCheckStart.position;
-    Vector3 point_top = GroundCheckStart.position;
+    Vector3 point_bottom, point_top;
+    point_bottom = point_top = GroundCheckStart.position + 0.5f*Vector3.up*m_Collider.height;
     
     // Only offset the points if the height is greater than double the radius
     if(m_Collider.height > 2.0f*m_Collider.radius) {
     	point_bottom -= Vector3.up*(0.5f*m_Collider.height - m_Collider.radius);
-    	point_top = point_bottom + Vector3.up*(m_Collider.height - m_Collider.radius);
+    	point_top = point_bottom + Vector3.up*(m_Collider.height - 2.0f*m_Collider.radius);
     }
     
     // Run the ground-check
-    if(Physics.CapsuleCast(point_bottom, point_top, m_Collider.radius, GroundCheckDirection, out hit_info, GroundCheckDistance, GroundCheckMask)) {
+    if(Physics.CapsuleCast(point_bottom, point_top, m_Collider.radius, GroundCheckDirection, out hit_info, 0.5f*m_Collider.height + GroundCheckDistance, GroundCheckMask)) {
       if(!m_IsGrounded) {
 	m_IsGrounded = true;
 	m_LandingTimeout = Time.time + JumpLandingCooldown;
@@ -170,8 +170,16 @@ public class FirstPersonMovementController : MonoBehaviour
 
     // Crouch
     if(m_CrouchInput && m_Collider.height > CrouchHeight) {
+      if(m_IsGrounded) {
+	m_Rigidbody.MovePosition(this.transform.position - 0.5f*Vector3.up*(m_Collider.height - CrouchHeight));
+      }
+      
       m_Collider.height = CrouchHeight;
     } else if(!m_CrouchInput && m_Collider.height < m_NormalHeight) {
+      if(m_IsGrounded) {
+	m_Rigidbody.MovePosition(this.transform.position + 0.5f*Vector3.up*(m_NormalHeight - m_Collider.height));
+      }
+      
       m_Collider.height = m_NormalHeight;
     }
 
