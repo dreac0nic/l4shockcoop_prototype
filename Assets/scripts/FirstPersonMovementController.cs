@@ -129,7 +129,7 @@ public class FirstPersonMovementController : MonoBehaviour
     Vector3 look_right = (CameraAnchor ? CameraAnchor.right : this.transform.right);
 
     // Perform ground check to see if we have left the ground.
-    Vector3 point_bottom = GroundCheckStart.position + Vector3.up*0.1f;
+    Vector3 point_bottom = GroundCheckStart.position;
     Vector3 point_top = GroundCheckStart.position;
     
     // Only offset the points if the height is greater than double the radius
@@ -139,7 +139,7 @@ public class FirstPersonMovementController : MonoBehaviour
     }
     
     // Run the ground-check
-    if(Physics.CapsuleCast(point_bottom, point_top, m_Collider.radius, GroundCheckDirection, out hit_info, GroundCheckDistance + 0.1f, GroundCheckMask)) {
+    if(Physics.CapsuleCast(point_bottom, point_top, m_Collider.radius, GroundCheckDirection, out hit_info, GroundCheckDistance, GroundCheckMask)) {
       if(!m_IsGrounded) {
 	m_IsGrounded = true;
 	m_LandingTimeout = Time.time + JumpLandingCooldown;
