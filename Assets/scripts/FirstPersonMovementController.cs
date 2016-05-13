@@ -159,10 +159,8 @@ public class FirstPersonMovementController : MonoBehaviour
     // Crouch
     if(m_CrouchInput && m_Collider.height > CrouchHeight) {
       m_Collider.height = CrouchHeight;
-      this.transform.position -= Vector3.up*CrouchHeight;
     } else if(m_Collider.height < m_NormalHeight) {
       m_Collider.height = m_NormalHeight;
-      this.transform.position += Vector3.up*CrouchHeight;
     }
 
     // Calculate movement based on current inputs
