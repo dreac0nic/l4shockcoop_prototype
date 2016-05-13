@@ -34,6 +34,7 @@ public class FirstPersonMovementController : MonoBehaviour
   public Transform GroundCheckStart;
   public float GroundCheckDistance = 0.01f;
   public float GroundCheckRadius = 0.5f;
+  public LayerMask GroundCheckMask = -1;
   public Vector3 GroundCheckDirection = Vector3.down;
 
   [Header("Input Names")]
@@ -128,7 +129,7 @@ public class FirstPersonMovementController : MonoBehaviour
     Vector3 look_right = (CameraAnchor ? CameraAnchor.right : this.transform.right);
 
     // Perform ground check to see if we have left the ground.
-    Vector3 point_bottom = GoundCheckStart.position;
+    Vector3 point_bottom = GroundCheckStart.position + Vector3.up*0.1f;
     Vector3 point_top = GroundCheckStart.position;
     
     // Only offset the points if the height is greater than double the radius
@@ -138,7 +139,7 @@ public class FirstPersonMovementController : MonoBehaviour
     }
     
     // Run the ground-check
-    if(Physics.CapsuleCast(point_bottom, point_top, m_Collider.radius, GroundCheckDirection, GroundCheckDistance, out hit_info, DefaultRaycastLayers, QueryTriggerInteraction.Ignore)) {
+    if(Physics.CapsuleCast(point_bottom, point_top, m_Collider.radius, GroundCheckDirection, out hit_info, GroundCheckDistance + 0.1f, GroundCheckMask)) {
       if(!m_IsGrounded) {
 	m_IsGrounded = true;
 	m_LandingTimeout = Time.time + JumpLandingCooldown;
@@ -170,7 +171,7 @@ public class FirstPersonMovementController : MonoBehaviour
     // Crouch
     if(m_CrouchInput && m_Collider.height > CrouchHeight) {
       m_Collider.height = CrouchHeight;
-    } else if(m_Collider.height < m_NormalHeight) {
+    } else if(!m_CrouchInput && m_Collider.height < m_NormalHeight) {
       m_Collider.height = m_NormalHeight;
     }
 
